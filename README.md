@@ -1,2 +1,2 @@
 # Flask-React-App
-Training excercise
+Training exercise
