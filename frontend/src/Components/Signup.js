@@ -1,24 +1,47 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Formik, Form } from 'formik';
 import TextField from './TextField';
 import * as Yup from 'yup';
+import axios from 'axios';
 
-const Signup = () => {
+
+export const Signup = () => {
+  
+  const [emailAnswer, setEmailAnswer] = useState('');
+  const [passwordAnswer, setPasswordAnswer] = useState('');
+  
   const validate = Yup.object({
     userName: Yup.string()
-      .required('This field can not be empty'),
+    .required('This field can not be empty'),
     email: Yup.string()
-      .email('Email is invalid')
-      .required('This field can not be empty'),
+    .email('Email is invalid')
+    .required('This field can not be empty'),
     password: Yup.string()
       .required('This field can not be empty'),
-    confirmPassword: Yup.string()
+      confirmPassword: Yup.string()
       .oneOf([Yup.ref('password'), null], 'Passwords must match')    
       .required('This field can not be empty'),
   })
+
+  const fetchAnswer = async (values) => {
+    const headers = {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json'
+    }
+    const email = values.email;
+    const password = values.password;
+    const userName = values.userName;
+    const { data } = await axios.post(
+      `http://127.0.0.1:8080/api/verify_email`, { email, password, userName }, { headers: headers }
+    );
+    const { emailAnswer, passwordAnswer } = data;
+    setEmailAnswer({emailAnswer})
+    setPasswordAnswer({passwordAnswer})
+  }
+
   return (
     <Formik
-      initialValues={{
+    initialValues={{
         userName: '',
         email: '',
         password: '',
@@ -26,7 +49,7 @@ const Signup = () => {
       }}
       validationSchema = {validate}
       onSubmit = {values => {
-        console.log(values);
+        fetchAnswer(values);
       }}
     >
       {formik => (
@@ -45,5 +68,3 @@ const Signup = () => {
     </Formik>
   )
 }
-
-export default Signup
