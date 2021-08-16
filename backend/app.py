@@ -29,17 +29,21 @@ def verifyEmail():
     emailAnswer = None
     # userNameAnswer = None
     passwordAnswer = None
+    emailCode = 0
+    passwordCode = 0
 
     res = list(filter(email.endswith, allowedDomains)) != []
     if(re.fullmatch(regex, email)):
         if(res):
             emailAnswer = 'Allowed email'
         else:
+            emailCode = 100
             emailAnswer = 'Valid email but invalid domain'
     else:
         emailAnswer = 'Invalid email'
 
     if(string_check.search(password) == None):
+        passwordCode = 100
         passwordAnswer = 'The password must contain a special character'
     else:
         passwordAnswer = 'Valid password'
